@@ -19,14 +19,18 @@
 6. 使用cron表达式，定时执行1-4逻辑
 
 ### 部署流程
-1. 安装intellij idea
-2. 安装mysql数据库
-3. 安装navicat数据库操作软件
-4. 使用navicat连接本地数据库
+- 安装intellij idea
+- 安装mysql数据库
+- 安装navicat数据库操作软件
+- 使用navicat连接本地数据库
+
 ![](imgs/数据库1.png)
-5. 右键本地数据库，选择运行sql文件
+- 右键本地数据库，选择运行sql文件
+
 ![](imgs/数据库2.png)
-6. 选中项目根目录下```sql/cases.sql```文件
+- 选中项目根目录下```sql/cases.sql```文件
+
 ![](imgs/数据库3.png)
-7. 点击开始，执行sql脚本，完成后刷新数据库即可看见生成的数据库与表
+- 点击开始，执行sql脚本，完成后刷新数据库即可看见生成的数据库与表
+
 ![](imgs/数据库4.png)
