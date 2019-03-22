@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
@@ -38,6 +39,8 @@ public class OkHttpUtil {
                         return cookies;
                     }
                 })
+                .readTimeout(30, TimeUnit.SECONDS) //读取超时
+                .writeTimeout(30, TimeUnit.SECONDS) //写超时
                 .build();
     }
 
@@ -46,7 +49,7 @@ public class OkHttpUtil {
             Response response = client.newCall(new Request.Builder().url(url).get().build()).execute();
             return response.body().string();
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             return null;
         }
     }
@@ -57,7 +60,7 @@ public class OkHttpUtil {
             Response response = client.newCall(new Request.Builder().url(url).post(requestBody).build()).execute();
             return response.body().string();
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             return null;
         }
     }
@@ -70,9 +73,28 @@ public class OkHttpUtil {
             Response response = client.newCall(new Request.Builder().url(url).post(formBody).build()).execute();
             return response.body().string();
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * 带重试的请求
+     */
+    public static String postForm(String url, Map<String, Object> data, int retry) {
+        if (retry > 0) {
+            String s = postForm(url, data);
+            if (s == null) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+                }
+                return postForm(url, data, retry - 1);
+            }
+            return s;
+        }
+        return null;
     }
 
 }

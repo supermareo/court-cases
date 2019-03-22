@@ -29,6 +29,7 @@ public class ExecuteCaseCrawler extends BaseCrawler {
     @Override
     public void crawler() {
         try {
+            log.info("crawlerExecuteCases start");
             String response = OkHttpUtil.get(Constant.URL_ZXGK);
             JSONArray ja = JSONArray.parseArray(response);
             response = ja.getJSONObject(0).getJSONArray("list").toString();

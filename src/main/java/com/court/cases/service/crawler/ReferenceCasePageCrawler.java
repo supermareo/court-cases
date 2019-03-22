@@ -30,6 +30,7 @@ public class ReferenceCasePageCrawler extends BaseCrawler {
     public void crawler() {
         int totalPages = 10;
         int curPage = 0;
+        log.info("crawlerReferenceCases start");
         while (true) {
             try {
                 if (curPage >= totalPages) {
@@ -41,7 +42,7 @@ public class ReferenceCasePageCrawler extends BaseCrawler {
                 formData.put("bt", "");
                 formData.put("lx", "lckx");
                 formData.put("pageNum", "" + curPage);
-                String response = OkHttpUtil.postForm(Constant.URL_CKXAL_LIST, formData);
+                String response = OkHttpUtil.postForm(Constant.URL_CKXAL_LIST, formData,3);
                 JSONObject jo = JSONObject.parseObject(response);
                 totalPages = jo.getInteger("pages");
                 String dataJson = jo.getJSONArray("list").toString();
@@ -65,11 +66,11 @@ public class ReferenceCasePageCrawler extends BaseCrawler {
                     //入库
                     referenceCaseMapper.insert(referenceCase);
                 }
-                log.info("crawlerReferenceCases complete success");
             } catch (Exception e) {
                 log.error("crawlerReferenceCases error, e=", e);
             }
         }
+        log.info("crawlerReferenceCases complete success");
     }
 
 

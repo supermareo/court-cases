@@ -33,6 +33,7 @@ public class GuideCasePageCrawler extends BaseCrawler {
     public void crawler() {
         int totalPages = 10;
         int curPage = 0;
+        log.info("crawlerGuideCases start");
         while (true) {
             try {
                 if (curPage >= totalPages) {
@@ -44,7 +45,7 @@ public class GuideCasePageCrawler extends BaseCrawler {
                 formData.put("bt", "");
                 formData.put("lx", "lzdx");
                 formData.put("pageNum", "" + curPage);
-                String response = OkHttpUtil.postForm(Constant.URL_ZDXAL_LIST, formData);
+                String response = OkHttpUtil.postForm(Constant.URL_ZDXAL_LIST, formData,3);
                 JSONObject jo = JSONObject.parseObject(response);
                 totalPages = jo.getInteger("pages");
                 String dataJson = jo.getJSONArray("list").toString();
@@ -68,11 +69,11 @@ public class GuideCasePageCrawler extends BaseCrawler {
                     //入库
                     guideCaseMapper.insert(guideCase);
                 }
-                log.info("crawlerGuideCases complete success");
             } catch (Exception e) {
                 log.error("crawlerGuideCases error, e=", e);
             }
         }
+        log.info("crawlerGuideCases complete success");
     }
 
 
