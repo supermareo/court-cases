@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd" ><!--一个mapper对应一个数据库-->
+<mapper namespace="com.court.cases.mybatis.mapper.cases.CasesMapper">
+
+    <select id="selectAllIds" resultType="java.lang.Integer">
+        SELECT id FROM execute_case
+    </select>
+
+    <select id="selectAllcBh" resultType="java.lang.String">
+        SELECT id FROM guide_case
+    </select>
+
+    <select id="selectAllcBh2" resultType="java.lang.String">
+        SELECT id FROM reference_case
+    </select>
+
+</mapper>
