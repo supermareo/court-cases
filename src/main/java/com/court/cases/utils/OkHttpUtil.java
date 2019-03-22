@@ -49,7 +49,6 @@ public class OkHttpUtil {
             Response response = client.newCall(new Request.Builder().url(url).get().build()).execute();
             return response.body().string();
         } catch (IOException e) {
-//            e.printStackTrace();
             return null;
         }
     }
@@ -60,7 +59,6 @@ public class OkHttpUtil {
             Response response = client.newCall(new Request.Builder().url(url).post(requestBody).build()).execute();
             return response.body().string();
         } catch (IOException e) {
-//            e.printStackTrace();
             return null;
         }
     }
@@ -73,7 +71,6 @@ public class OkHttpUtil {
             Response response = client.newCall(new Request.Builder().url(url).post(formBody).build()).execute();
             return response.body().string();
         } catch (IOException e) {
-//            e.printStackTrace();
             return null;
         }
     }
