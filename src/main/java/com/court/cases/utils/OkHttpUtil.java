@@ -1,23 +1,17 @@
 package com.court.cases.utils;
 
+import com.court.cases.model.MoguResult;
 import com.google.gson.Gson;
+import okhttp3.*;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import okhttp3.Cookie;
-import okhttp3.CookieJar;
-import okhttp3.FormBody;
-import okhttp3.HttpUrl;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class OkHttpUtil {
 
@@ -86,12 +80,32 @@ public class OkHttpUtil {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
 //                    e.printStackTrace();
+                    e.printStackTrace();
                 }
                 return postForm(url, data, retry - 1);
             }
             return s;
         }
         return null;
+    }
+
+    /**
+     * 带代理的请求
+     */
+    public static String postForm(String url, Map<String, Object> data, MoguResult.Proxy proxy) {
+        try {
+            OkHttpClient.Builder builder = new OkHttpClient.Builder();
+            Proxy p = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxy.getIp(), Integer.parseInt(proxy.getPort())));
+            builder.proxy(p);
+
+            FormBody.Builder fb = new FormBody.Builder();
+            data.forEach((s, o) -> fb.add(s, (String) o));
+            FormBody formBody = fb.build();
+            Response response = builder.build().newCall(new Request.Builder().url(url).post(formBody).build()).execute();
+            return response.body().string();
+        } catch (IOException e) {
+            return null;
+        }
     }
 
 }

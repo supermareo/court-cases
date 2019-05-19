@@ -13,4 +13,6 @@ public interface CasesMapper {
 
     List<String> selectAllcBh2();
 
+    List<String> selectAllNoticeIds();
+
 }
