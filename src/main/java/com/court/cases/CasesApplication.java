@@ -26,7 +26,7 @@ public class CasesApplication {
     @PostConstruct
     public void init() {
         log.info("启动时执行开始");
-        crawlerService.startCrawler();
+        new Thread(() -> crawlerService.startCrawler()).start();
         log.info("启动时执行结束");
     }
 

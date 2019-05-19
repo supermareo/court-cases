@@ -51,6 +51,8 @@ public class ExecuteCaseCrawler extends BaseCrawler {
                 crawlerDetail(notInDbCase);
                 //入库
                 executeCaseMapper.insert(notInDbCase);
+                //限制爬虫频率
+                Thread.sleep(500);
             }
             log.info("crawlerExecuteCases complete success");
         } catch (Exception e) {

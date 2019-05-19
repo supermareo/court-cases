@@ -42,7 +42,7 @@ public class ReferenceCasePageCrawler extends BaseCrawler {
                 formData.put("bt", "");
                 formData.put("lx", "lckx");
                 formData.put("pageNum", "" + curPage);
-                String response = OkHttpUtil.postForm(Constant.URL_CKXAL_LIST, formData,3);
+                String response = OkHttpUtil.postForm(Constant.URL_CKXAL_LIST, formData, 3);
                 JSONObject jo = JSONObject.parseObject(response);
                 totalPages = jo.getInteger("pages");
                 String dataJson = jo.getJSONArray("list").toString();
@@ -65,6 +65,8 @@ public class ReferenceCasePageCrawler extends BaseCrawler {
                     ReferenceCase referenceCase = crawlerDetail(notInDbCase);
                     //入库
                     referenceCaseMapper.insert(referenceCase);
+                    //限制爬虫频率
+                    Thread.sleep(500);
                 }
             } catch (Exception e) {
                 log.error("crawlerReferenceCases error, e=", e);
