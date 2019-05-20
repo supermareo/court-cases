@@ -30,7 +30,7 @@ public class ExecuteCaseCrawler extends BaseCrawler {
     public void crawler() {
         try {
             log.info("crawlerExecuteCases start");
-            String response = OkHttpUtil.get(Constant.URL_ZXGK);
+            String response = OkHttpUtil.get(Constant.URL_ZXGK, proxyService);
             JSONArray ja = JSONArray.parseArray(response);
             response = ja.getJSONObject(0).getJSONArray("list").toString();
             List<ExecuteCase> data = JsonUtil.fromJson(response, new TypeToken<List<ExecuteCase>>() {
@@ -66,7 +66,7 @@ public class ExecuteCaseCrawler extends BaseCrawler {
     private void crawlerDetail(ExecuteCase casePage) {
         String url = Constant.URL_ZXGK_DETAIL.replace("#PATH", casePage.getFilePath()).replace("#FILENAME", casePage.getFileName());
         log.info("crawlerDetail start {}", url);
-        String html = OkHttpUtil.get(url);
+        String html = OkHttpUtil.get(url, proxyService);
         casePage.setDetail(html);
         log.info("crawlerDetail complete {}, data={}", url, casePage);
     }

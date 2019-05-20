@@ -3,14 +3,12 @@ package com.court.cases.service.crawler;
 import com.alibaba.fastjson.JSONObject;
 import com.court.cases.Constant;
 import com.court.cases.model.CourtNoticePage;
-import com.court.cases.model.MoguResult;
 import com.court.cases.mybatis.entity.cases.CourtNotice;
 import com.court.cases.mybatis.mapper.cases.CourtNoticeMapper;
-import com.court.cases.service.ProxyService;
 import com.court.cases.utils.JsonUtil;
 import com.court.cases.utils.OkHttpUtil;
 import com.google.gson.reflect.TypeToken;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -20,19 +18,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 @Service
 public class CourtNoticeCrawler extends BaseCrawler {
 
     @Autowired
     private CourtNoticeMapper courtNoticeMapper;
-    @Autowired
-    private ProxyService proxyService;
 
     @Override
     public void crawler() {
-        int curPage = 0;
-        int totalPages = 0;
+        int curPage = 400;
+        int totalPages = 400;
         int duplicateCount = 0;
         log.info("crawlerCourtNoticeCrawler start");
         while (true) {
@@ -47,13 +45,13 @@ public class CourtNoticeCrawler extends BaseCrawler {
                 formData.put("pageNum", "" + curPage);
                 String url = Constant.URL_KTGG_LIST.replace("#PAGE", curPage + "");
                 log.info("crawlerCourtNoticeCrawler {}", url);
-                String response = OkHttpUtil.postForm(url, formData, 3);
+                String response = OkHttpUtil.postForm(url, formData, proxyService);
                 response = check(response, url, formData);
                 //访问频次达到限制
                 JSONObject jo = JSONObject.parseObject(response);
-                if (totalPages == 0) {
-                    totalPages = jo.getJSONObject("page").getInteger("pages");
-                }
+//                if (totalPages == 0) {
+                totalPages = jo.getJSONObject("page").getInteger("pages");
+//                }
                 String dataList = jo.getJSONArray("data").toString();
                 List<CourtNoticePage> data = JsonUtil.fromJson(dataList, new TypeToken<List<CourtNoticePage>>() {
                 }.getType());
@@ -81,7 +79,7 @@ public class CourtNoticeCrawler extends BaseCrawler {
                     courtNoticeMapper.insert(courtNotice);
                 }
                 //限制爬虫频率
-                Thread.sleep(1000);
+//                Thread.sleep(1000);
             } catch (Exception e) {
                 log.error("crawlerCourtNoticeCrawler error, e=", e);
             }
@@ -90,17 +88,21 @@ public class CourtNoticeCrawler extends BaseCrawler {
     }
 
     private String check(String response, String url, Map<String, Object> formData) {
-        log.info("response={}", response);
-        JSONObject jo = JSONObject.parseObject(response);
-        boolean check = jo.containsKey("pageCheck") && jo.getBoolean("pageCheck");
-        if (!check) {
-            return response;
+        try {
+            JSONObject jo = JSONObject.parseObject(response);
+            boolean check = jo.containsKey("pageCheck") && jo.getBoolean("pageCheck");
+            if (!check) {
+                return response;
+            } else {
+                log.info("response={}", response);
+                proxyService.refresh();
+                return check(OkHttpUtil.postForm(url, formData, proxyService), url, formData);
+            }
+        } catch (Exception e) {
+            log.info("response={}", response);
+            proxyService.refresh();
+            return check(OkHttpUtil.postForm(url, formData, proxyService), url, formData);
         }
-        return response;
-//        //TODO 应该在这里切换ip
-//        MoguResult.Proxy proxy = proxyService.getProxy();
-//        log.warn("page need check, use mogu proxy {}", JsonUtil.toJson(proxy));
-//        return check(OkHttpUtil.postForm(url, formData, proxy), url, formData);
     }
 
 }

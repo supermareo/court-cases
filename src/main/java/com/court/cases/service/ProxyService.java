@@ -1,38 +1,39 @@
 package com.court.cases.service;
 
-import com.court.cases.model.MoguResult;
+import com.court.cases.model.ProxyResult;
 import com.court.cases.utils.JsonUtil;
 import com.court.cases.utils.OkHttpUtil;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
- * 使用蘑菇代理
+ * 使用代理
  */
 @Service
 public class ProxyService {
 
-    @Value("${url.mogu}")
-    private String moguUrl;
+    @Value("${proxy.url}")
+    private String proxyUrl;
 
-    private MoguResult.Proxy curProxy = null;
+    private ProxyResult.Proxy curProxy = null;
 
     //获取代理
-    public MoguResult.Proxy getProxy() {
+    public ProxyResult.Proxy getProxy() {
         if (curProxy != null) {
             return curProxy;
         }
-        String response = OkHttpUtil.get(moguUrl);
-        MoguResult moguResult = JsonUtil.fromJson(response, MoguResult.class);
-        if (moguResult == null) {
-            throw new RuntimeException("蘑菇代理获取失败:" + response);
+        String response = OkHttpUtil.get(proxyUrl);
+        ProxyResult proxyResult = JsonUtil.fromJson(response, ProxyResult.class);
+        if (proxyResult == null || !proxyResult.isSuccess()) {
+            throw new RuntimeException("代理获取失败:" + response);
         }
-        curProxy = moguResult.getMsg().get(0);
+        curProxy = proxyResult.getData().get(0);
         return curProxy;
     }
 
     //刷新代理
-    public MoguResult.Proxy refresh() {
+    public ProxyResult.Proxy refresh() {
         this.curProxy = null;
         return getProxy();
     }

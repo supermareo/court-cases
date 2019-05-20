@@ -4,14 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.court.cases.Constant;
 import com.court.cases.model.GuideCasePage;
 import com.court.cases.mybatis.entity.cases.GuideCase;
-import com.court.cases.mybatis.mapper.cases.CasesMapper;
-import com.court.cases.mybatis.mapper.cases.GuideCaseMapper;
 import com.court.cases.utils.JsonUtil;
 import com.court.cases.utils.OkHttpUtil;
 import com.court.cases.utils.StringUtil;
 import com.google.gson.reflect.TypeToken;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -45,7 +42,7 @@ public class GuideCasePageCrawler extends BaseCrawler {
                 formData.put("bt", "");
                 formData.put("lx", "lzdx");
                 formData.put("pageNum", "" + curPage);
-                String response = OkHttpUtil.postForm(Constant.URL_ZDXAL_LIST, formData, 3);
+                String response = OkHttpUtil.postForm(Constant.URL_ZDXAL_LIST, formData, proxyService);
                 JSONObject jo = JSONObject.parseObject(response);
                 totalPages = jo.getInteger("pages");
                 String dataJson = jo.getJSONArray("list").toString();
@@ -90,7 +87,7 @@ public class GuideCasePageCrawler extends BaseCrawler {
         guideCase.setUpdateTime(casePage.getDtUpdatetime());
         String url = Constant.URL_ZDXAL_DETAIL.replace("#ID", casePage.getCBh());
         log.info("crawlerDetail start {}", url);
-        String html = OkHttpUtil.get(url);
+        String html = OkHttpUtil.get(url, proxyService);
         html = cleanHtml(html);
         guideCase.setDetail(html);
         log.info("crawlerDetail complete {}, data={}", url, casePage);

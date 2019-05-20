@@ -4,6 +4,7 @@ import com.court.cases.mybatis.mapper.cases.CasesMapper;
 import com.court.cases.mybatis.mapper.cases.ExecuteCaseMapper;
 import com.court.cases.mybatis.mapper.cases.GuideCaseMapper;
 import com.court.cases.mybatis.mapper.cases.ReferenceCaseMapper;
+import com.court.cases.service.ProxyService;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -21,6 +22,8 @@ public abstract class BaseCrawler {
     GuideCaseMapper guideCaseMapper;
     @Autowired
     ReferenceCaseMapper referenceCaseMapper;
+    @Autowired
+    ProxyService proxyService;
 
     public abstract void crawler();
 

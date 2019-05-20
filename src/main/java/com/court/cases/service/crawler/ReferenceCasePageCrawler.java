@@ -42,7 +42,7 @@ public class ReferenceCasePageCrawler extends BaseCrawler {
                 formData.put("bt", "");
                 formData.put("lx", "lckx");
                 formData.put("pageNum", "" + curPage);
-                String response = OkHttpUtil.postForm(Constant.URL_CKXAL_LIST, formData, 3);
+                String response = OkHttpUtil.postForm(Constant.URL_CKXAL_LIST, formData, proxyService);
                 JSONObject jo = JSONObject.parseObject(response);
                 totalPages = jo.getInteger("pages");
                 String dataJson = jo.getJSONArray("list").toString();
@@ -87,7 +87,7 @@ public class ReferenceCasePageCrawler extends BaseCrawler {
         referenceCase.setUpdateTime(casePage.getDtUpdatetime());
         String url = Constant.URL_CKXAL_DETAIL.replace("#ID", casePage.getCBh());
         log.info("crawlerDetail start {}", url);
-        String html = OkHttpUtil.get(url);
+        String html = OkHttpUtil.get(url, proxyService);
         html = cleanHtml(html);
         referenceCase.setDetail(html);
         log.info("crawlerDetail complete {}, data={}", url, casePage);

@@ -22,9 +22,9 @@ public class CrawlerService {
     private CourtNoticeCrawler courtNoticeCrawler;
 
     public void startCrawler() {
-//        executeCaseCrawler.crawler();
-//        guideCasePageCrawler.crawler();
-//        referenceCasePageCrawler.crawler();
+        executeCaseCrawler.crawler();
+        guideCasePageCrawler.crawler();
+        referenceCasePageCrawler.crawler();
         courtNoticeCrawler.crawler();
     }
 
